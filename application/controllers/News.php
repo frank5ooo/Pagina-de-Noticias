@@ -10,6 +10,15 @@ class News extends CI_Controller {
 
         public function index()
 		{
+			$this->load->library('pagination');
+
+			$config['base_url'] = base_url().'news/pagina/';
+			$config['total_rows'] = 200;
+			$config['per_page'] = 2;
+
+			$this->pagination->initialize($config);
+
+			echo $this->pagination->create_links();
 			$data['news'] = $this->News_model->get_news();
 			$data['title'] = 'News archive';
 
@@ -54,7 +63,7 @@ class News extends CI_Controller {
 			else
 			{
 				$this->News_model->set_news();
-				$this->load->view('news/success');
+				redirect('news');
 			}
 		}
 }
