@@ -2,6 +2,7 @@
 
 /**
  * @property CI_DB_query_builder $db
+ * @property CI_Session $session
  */
 
 class News_model extends CI_Model {
@@ -9,6 +10,8 @@ class News_model extends CI_Model {
 	public function __construct()
 	{
 		$this->load->database();
+		$this->load->library(['form_validation', 'session']);
+
 	}
 	
 	public function get_all_news($page)
@@ -44,10 +47,17 @@ class News_model extends CI_Model {
 	
 	public function get_slug_news($slug = FALSE)
 	{ 
-		$query = $this->db->get_where('news', array('slug' => $slug));
+		// $query = $this->db->get_where('news', array('slug' => $slug));
+
+		$this->db->select('n.*, u.fullname');
+		$this->db->from('news n');
+		$this->db->join('users u', 'u.id = n.id_author');
+		$this->db->where('n.slug', $slug);
+		$query = $this->db->get();
+
         return $query->row_array();
-	 
 	}
+
 
 	public function set_news()
 	{
@@ -58,7 +68,8 @@ class News_model extends CI_Model {
 		$data = array(
 			'title' => $this->input->post('title'),
 			'slug' => $slug,
-			'text' => $this->input->post('text')
+			'text' => $this->input->post('text'),
+			'id_author'=> $this->session->userdata('id')
 		);
 
 		return $this->db->insert('news', $data);
