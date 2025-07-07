@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * @property CI_Loader $load
+ * @property CI_Pagination $pagination
+ * @property News_model $News_model
+ * @property CI_Form_validation $form_validation
+ */
+
 class News extends CI_Controller {
 
         public function __construct()
@@ -58,7 +66,6 @@ class News extends CI_Controller {
 				$this->load->view('templates/header', $data);
 				$this->load->view('news/create');
 				$this->load->view('templates/footer');
-
 			}
 			else
 			{
