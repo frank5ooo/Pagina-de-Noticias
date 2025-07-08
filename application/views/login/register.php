@@ -6,7 +6,7 @@
     </div>
 <?php endif; ?>
 
-<?php echo form_open('login/register'); ?>
+<?php echo form_open('Users/register'); ?>
 
     <label for="username">username</label>
     <input type="text" name="username" /><br />
@@ -15,6 +15,9 @@
 
     <label for="password">password</label>
     <input type="password" name="password" /><br />
+    
+    <label for="passconf">Reescribir la password</label>
+    <input type="password" name="passconf" /><br />
 
     <input type="submit" name="submit" value="Create a profile" />
 

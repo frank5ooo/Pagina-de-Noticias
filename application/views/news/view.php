@@ -1,3 +1,5 @@
-<?php
-echo '<h2>'.$news_item['title'].'</h2>';
-echo $news_item['text'];
+    <h2><?= $news_item['title'] ?></h2>
+
+    <?= $news_item['text'] ?>
+
+    <p>Noticia creada por <?php echo $news_item['fullname']; ?></p>
