@@ -1,7 +1,7 @@
 <h1>Crear Usuario</h1>
 
 <?php if (validation_errors()) : ?>
-    <div class="alert alert-danger">
+    <div>
         <?= validation_errors(); ?>
     </div>
 <?php endif; ?>
@@ -20,5 +20,4 @@
     <input type="password" name="passconf" /><br />
 
     <input type="submit" name="submit" value="Create a profile" />
-
 </form>

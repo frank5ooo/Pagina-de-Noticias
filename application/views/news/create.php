@@ -3,7 +3,6 @@
 
 <?php echo form_open('news/create'); ?>
 
-    
     <label for="title">Title</label>
 
     <input type="text" name="title" /><br />

@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define("URL_PREFIX",'codeigniter/');
+
+define("BASE_URL",'http://localhost/'.URL_PREFIX.'index.php/');
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

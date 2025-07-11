@@ -1,6 +1,4 @@
-
-
-<h2 class="text-center mb-4">Ingreso exitoso</h2>
+<h2>Ingreso exitoso</h2>
 
 <form action="<?php echo site_url('News/create'); ?>" method="post">
     <button type="submit">Crear Noticia</button>

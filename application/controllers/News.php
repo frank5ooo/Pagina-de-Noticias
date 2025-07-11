@@ -1,11 +1,12 @@
 <?php
-
 /**
  * @property CI_DB_query_builder $db
  * @property News_model $News_model
  * @property CI_Pagination $pagination
  * @property CI_Form_validation $form_validation
  * @property CI_Session $session
+ * @property CI_Input $input
+ * 
  */
 
 class News extends CI_Controller {
@@ -21,28 +22,16 @@ class News extends CI_Controller {
 	public function index()
 	{
 		$this->page();
-
-		$this->by_slug();
 	}
-
-	public function by_slug()
-	{
-		$data['news'] = $this->News_model->get_slug_news();
-
-	}
-
 	public function page($page = 1)
 	{
-		// Obtener noticias
 		$data['news'] = $this->News_model->get_all_news($page);
 
 		$data['title'] = 'Noticias';
 
-		// Pasar links de paginación
 		$this->load->library('pagination');
 		$data['pagination_links'] = $this->pagination->create_links();
 
-		// Cargar vistas
 		$this->load->view('templates/header', $data);
 		$this->load->view('news/index', $data);
 		$this->load->view('templates/footer');
@@ -50,20 +39,24 @@ class News extends CI_Controller {
 
 	public function view($slug)
 	{
-		// Obtener la noticia según el slug
 		$news_item = $this->News_model->get_slug_news($slug);
+		$userId =$this->session->userdata('username');
 
 		if (empty($news_item))
 		{
 			show_404();
 		}
+		
+		$currentVote = $this->News_model->get_user_vote($userId, $news_item['id']);
 
-		// Cargar las vistas
 		$this->load->view('templates/header', ['title' => $news_item['title']]);
-		$this->load->view('news/view', ['news_item' => $news_item]);
+		$this->load->view('news/view', [
+			'news_item' => $news_item,
+			'currentVote' => $currentVote,
+		]);
+
 		$this->load->view('templates/footer');
 	}
-
 
 	public function create()
 	{
@@ -93,5 +86,41 @@ class News extends CI_Controller {
 			$this->News_model->set_news();
 			redirect('news');
 		}
+	}
+
+	public function vote($idNoticia)
+	{
+		header('Content-Type: application/json');
+
+		if (!$this->session->userdata('username'))
+		{
+			http_response_code(401);
+			echo json_encode([
+				'error' => 'Debés iniciar sesión para votar.'
+			]);
+			return;
+		}
+
+		$json = file_get_contents('php://input');
+		$data = json_decode($json, true);
+
+		if($data['vote']==='up')
+		{
+			$vote = 1;
+		} 
+		else if ($data['vote']==='down')
+		{
+			$vote = -1;
+		} else {
+			$vote = 0;
+		}
+
+		$idUser= $this->session->userdata('id');
+
+    	$ok = $this->News_model->vote($idUser, $idNoticia, $vote);
+
+		echo json_encode([
+			'mensaje' => $ok,
+		]);
 	}
 }
