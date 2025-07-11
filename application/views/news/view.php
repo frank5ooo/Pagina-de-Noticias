@@ -4,11 +4,12 @@
 
 <p>Noticia creada por <?php echo $news_item['fullname']; ?></p>
 
-
 <?=$votedUp = $currentVote === 'up' ? 'voted' : '';?>
 <?=$votedDown = $currentVote === 'down' ? 'voted' : '';?>
 
-<button type="hidden"  class="vote-button upvote <?= $votedUp ?>" id="upvote" data-news-id="<?= $news_item['id'] ?>">&uArr;</button>
+<p id="ResultNeto">Votos: <?php echo ($ResultNeto) ?> </p>
+
+<button type="hidden" class="vote-button upvote <?= $votedUp ?>" id="upvote" data-news-id="<?= $news_item['id'] ?>">&uArr;</button>
 
 <button type="hidden" class="vote-button downvote <?= $votedDown ?>"  id="downvote" data-news-id="<?= $news_item['id'] ?>">&dArr;</button> 
 

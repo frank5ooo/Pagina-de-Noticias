@@ -46,9 +46,44 @@ class News_model extends CI_Model {
 		$this->db->from('news n');
 		$this->db->join('users u', 'u.id = n.id_author');
 		$this->db->where('n.slug', $slug);
+
+
 		$query = $this->db->get();
 
         return $query->row_array();
+	}
+
+	public function filter_by_slug($slug) {
+		$this->db->where('n.slug', $slug);
+		return $this;
+	}
+
+	public function add_author($authorId) {
+		$this->db->join('users u', 'u.id = n.id_author');
+		return $this;
+	}
+
+	private function select($select) {
+		return $this->db->select($select)
+			->from('news n')
+			->get();
+	}
+	
+
+	public function get_result($select) {
+		$result = $this->select($select);
+
+		// if(!$result) {
+		// 	//error
+		// }
+
+		return $result->result_array();
+	}
+
+	public function get_row($select) {
+		$result = $this->select($select);
+
+		return $result->row_array();
 	}
 
 	public function set_news()
@@ -89,6 +124,7 @@ class News_model extends CI_Model {
 		$query = $this->db->get();
 		$votoExistente = $query->row_array();
 
+	
 		if(intval($votoExistente['value']) === intval($vote))
 		{	
 			$this->db->where('id_user', $idUser);
@@ -132,22 +168,23 @@ class News_model extends CI_Model {
 
 	public function get_user_vote($userId, $newsId) 
 	{
-		$this->db->select('v.value');
-		$this->db->from('votes v');
-		$this->db->where('id_user', $userId);
-		$this->db->where('id_news', $newsId);
+		$this->db->select('v.value')
+			->from('votes v')
+			->where('id_user', $userId)
+			->where('id_news', $newsId)
+			->limit(1);
 		
 		$query = $this->db->get();
 
-		if ($query->num_rows() > 0) 
+		if ($row = $query->row()) 
 		{
-			$value =$query->row()->value;
-			if ($value === 1) 
+			$value = $row->value;
+			if ($value == 1) 
 			{
 				return 'up';
 			}
 
-			if ($value === -1)
+			if ($value == -1)
 			{
 				return 'down';
 			}
@@ -155,5 +192,25 @@ class News_model extends CI_Model {
 
 		return null;
 	}
+
+	public function countVotes($newsId)
+	{ 
+		$query = $this->db->select_sum('value', 'ResultNeto')
+				  ->from("votes")
+				  ->where('id_news', $newsId)
+				  ->get();
+
+		if(!$query->row_array()['ResultNeto'])
+		{
+			return 0;
+		}
+		else
+		{
+        	return $query->row_array()['ResultNeto'];
+		}
+		
+	}
+
+
 
 }

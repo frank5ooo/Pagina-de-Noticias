@@ -40,7 +40,7 @@ class News extends CI_Controller {
 	public function view($slug)
 	{
 		$news_item = $this->News_model->get_slug_news($slug);
-		$userId =$this->session->userdata('username');
+		$userId =$this->session->userdata('id');
 
 		if (empty($news_item))
 		{
@@ -49,10 +49,13 @@ class News extends CI_Controller {
 		
 		$currentVote = $this->News_model->get_user_vote($userId, $news_item['id']);
 
+		$ResultNeto = $this->News_model->countVotes($news_item['id']);
+		
 		$this->load->view('templates/header', ['title' => $news_item['title']]);
 		$this->load->view('news/view', [
 			'news_item' => $news_item,
 			'currentVote' => $currentVote,
+			'ResultNeto' => $ResultNeto,
 		]);
 
 		$this->load->view('templates/footer');
@@ -119,8 +122,17 @@ class News extends CI_Controller {
 
     	$ok = $this->News_model->vote($idUser, $idNoticia, $vote);
 
+		$ResultNeto = $this->News_model->countVotes($idNoticia);
+
+		/*
+		
+		$this->News_model->filter_by_slug($slug);
+
+		//*/
+
 		echo json_encode([
 			'mensaje' => $ok,
+			'ResultNeto'=> $ResultNeto,
 		]);
 	}
 }

@@ -40,6 +40,8 @@ function vote(newsId, type, button) {
 			button.classList.add('voted');
 		}
 		
+		document.getElementById('ResultNeto').innerText = 'Votos: ' + data.ResultNeto;
+		
 	})
 
 	.catch(error => {
